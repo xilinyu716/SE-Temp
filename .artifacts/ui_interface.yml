@@ -1,0 +1,175 @@
+# 前端UI接口定义
+# 用于用户登录和注册功能的前端UI组件
+
+- type: Frontend
+  id: UI-HomePage
+  description: 应用首页，包含登录和注册入口按钮。
+  properties:
+    - name: onLoginClick
+      type: function
+      description: "点击'亲，请登录'按钮的回调函数。"
+    - name: onRegisterClick
+      type: function
+      description: "点击'免费注册'按钮的回调函数。"
+  state:
+    - isLoggedIn
+    - userInfo
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 页面应显示"亲，请登录"和"免费注册"按钮。
+    - 点击按钮时应调用对应的回调函数。
+    - 如果用户已登录，应显示用户信息而非登录按钮。
+  changeLog:
+    - date: "2025-10-27"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-LoginForm
+  description: 用户登录表单，处理手机号和验证码输入。
+  properties:
+    - name: onLoginSuccess
+      type: function
+      description: "登录成功后的回调函数。"
+    - name: onNavigateToRegister
+      type: function
+      description: "导航到注册页面的回调函数。"
+  state:
+    - phoneNumber
+    - verificationCode
+    - error
+    - isLoading
+    - countdown
+    - canSendCode
+  dependencies:
+    - API-POST-SendVerificationCode
+    - API-POST-Login
+  acceptanceCriteria:
+    - 组件应渲染手机号输入框、验证码输入框、获取验证码按钮和登录按钮。
+    - 手机号格式验证应在前端进行。
+    - 获取验证码按钮点击后应进入60秒倒计时状态。
+    - 登录失败时应显示相应错误信息。
+    - 当isLoading状态为true时，登录按钮应被禁用。
+  changeLog:
+    - date: "2025-10-27"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-RegisterForm
+  description: 用户注册表单，处理手机号、验证码和用户协议。
+  properties:
+    - name: onRegisterSuccess
+      type: function
+      description: "注册成功后的回调函数。"
+    - name: onNavigateToLogin
+      type: function
+      description: "导航到登录页面的回调函数。"
+  state:
+    - phoneNumber
+    - verificationCode
+    - agreeToTerms
+    - error
+    - isLoading
+    - countdown
+    - canSendCode
+  dependencies:
+    - API-POST-SendVerificationCode
+    - API-POST-Register
+  acceptanceCriteria:
+    - 组件应渲染手机号输入框、验证码输入框、获取验证码按钮、用户协议勾选框和注册按钮。
+    - 手机号格式验证应在前端进行。
+    - 获取验证码按钮点击后应进入60秒倒计时状态。
+    - 只有勾选用户协议后，注册按钮才可点击。
+    - 注册失败时应显示相应错误信息。
+    - 当isLoading状态为true时，注册按钮应被禁用。
+  changeLog:
+    - date: "2025-10-27"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-VerificationCodeInput
+  description: 验证码输入组件，可复用于登录和注册页面。
+  properties:
+    - name: phoneNumber
+      type: string
+      description: "关联的手机号。"
+    - name: onCodeChange
+      type: function
+      description: "验证码变化时的回调函数。"
+    - name: onSendCode
+      type: function
+      description: "发送验证码的回调函数。"
+    - name: disabled
+      type: boolean
+      description: "是否禁用输入框。"
+  state:
+    - verificationCode
+    - countdown
+    - canSendCode
+    - isLoading
+  dependencies:
+    - API-POST-SendVerificationCode
+  acceptanceCriteria:
+    - 组件应包含验证码输入框和获取验证码按钮。
+    - 按钮点击后应进入60秒倒计时状态。
+    - 倒计时期间按钮应显示剩余秒数且不可点击。
+    - 验证码输入应限制为6位数字。
+  changeLog:
+    - date: "2025-10-27"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-PhoneNumberInput
+  description: 手机号输入组件，包含格式验证功能。
+  properties:
+    - name: value
+      type: string
+      description: "手机号值。"
+    - name: onChange
+      type: function
+      description: "手机号变化时的回调函数。"
+    - name: onValidationChange
+      type: function
+      description: "验证状态变化时的回调函数。"
+    - name: disabled
+      type: boolean
+      description: "是否禁用输入框。"
+  state:
+    - phoneNumber
+    - isValid
+    - errorMessage
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 组件应实时验证手机号格式。
+    - 格式错误时应显示错误提示。
+    - 应支持中国大陆手机号格式验证。
+    - 输入框应限制只能输入数字。
+  changeLog:
+    - date: "2025-10-27"
+      description: "初始创建。"
+
+- type: Frontend
+  id: UI-UserAgreementCheckbox
+  description: 用户协议勾选框组件，用于注册页面。
+  properties:
+    - name: checked
+      type: boolean
+      description: "是否已勾选。"
+    - name: onChange
+      type: function
+      description: "勾选状态变化时的回调函数。"
+    - name: onViewAgreement
+      type: function
+      description: "查看用户协议的回调函数。"
+  state:
+    - isChecked
+  dependencies:
+    - none
+  acceptanceCriteria:
+    - 组件应显示"同意《淘贝用户协议》"文本和勾选框。
+    - 用户协议文本应可点击查看详情。
+    - 勾选状态变化时应通知父组件。
+  changeLog:
+    - date: "2025-10-27"
+      description: "初始创建。"
